@@ -76,7 +76,7 @@ def transcribe(path, api_key):
   chunks = __generate_chunks(__preprocess_audio(audio))
   logger.debug("Got %d chunks", len(chunks))
 
-  transcriber = WitTranscriber("RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH")
+  transcriber = WitTranscriber(api_key)
   for i, chunk in enumerate(chunks):
     logger.debug("Transcribing chunk %d", i)
     text = transcriber.transcribe(chunk)
