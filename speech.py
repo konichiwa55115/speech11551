@@ -13,11 +13,11 @@ logger = logging.getLogger("speech")
 class WitTranscriber:
   speech_url = "https://api.wit.ai/speech"
 
-  def __init__(self, "RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH"):
+  def __init__(self, api_key):
     self.session = requests.Session()
     self.session.headers.update(
       {
-        "Authorization": "Bearer " + "RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH",
+        "Authorization": "Bearer " + api_key,
         "Accept": "application/vnd.wit.20180705+json",
         "Content-Type": "audio/raw;encoding=signed-integer;bits=16;rate=8000;endian=little",
       }
@@ -69,14 +69,14 @@ def __preprocess_audio(audio):
   return audio.set_sample_width(2).set_channels(1).set_frame_rate(8000)
 
 
-def transcribe(path, "RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH"):
+def transcribe(path, api_key):
   logger.info("Transcribing file %s", path)
   audio = AudioSegment.from_file(path)
 
   chunks = __generate_chunks(__preprocess_audio(audio))
   logger.debug("Got %d chunks", len(chunks))
 
-  transcriber = WitTranscriber("RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH")
+  transcriber = WitTranscriber(api_key)
   for i, chunk in enumerate(chunks):
     logger.debug("Transcribing chunk %d", i)
     text = transcriber.transcribe(chunk)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
   import sys
 
   parser = argparse.ArgumentParser()
-  parser.add_argument("RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH")
+  parser.add_argument("api_key")
   parser.add_argument("input_filename")
   parser.add_argument("output_filename")
   args = parser.parse_args()
@@ -102,7 +102,7 @@ if __name__ == "__main__":
   else:
       output = open(args.output_filename, mode="w")
 
-  result = transcribe(args.input_filename, args."RK3ETXWBJQSMO262RXPAIXFSG6NH3QRH")
+  result = transcribe(args.input_filename, args.api_key)
   for part in result:
       output.write(part + "\n")
       output.flush()
